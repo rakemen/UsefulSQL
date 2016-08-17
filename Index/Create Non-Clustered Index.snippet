@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+		<Header>
+			<Title>Create Non-Clustered Index</Title>
+			<Shortcut></Shortcut>
+			<Description>Creates a non-clustered index.</Description>
+			<Author>Bhuvan Goradia</Author>
+			<SnippetTypes>
+				<SnippetType>Expansion</SnippetType>
+			</SnippetTypes>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>Tablename</ID>
+					<ToolTip>Name of the table</ToolTip>
+					<Default>Sample_Table</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="SQL"><![CDATA[IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_$Tablename$_')
+BEGIN
+	CREATE NONCLUSTERED INDEX IX_$Tablename$_ ON $Tablename$ ( $end$ ) 
+	INCLUDE () 
+    WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [INDEXES]
+END
+GO]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+</CodeSnippets>

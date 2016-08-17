@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+	<Header>
+	<Title>Create Table</Title>
+        <Shortcut></Shortcut>
+	<Description>Creates a table.</Description>
+	<Author>Microsoft Corporation</Author>
+	<SnippetTypes>
+		<SnippetType>Expansion</SnippetType>
+	</SnippetTypes>
+	</Header>
+	<Snippet>
+		<Declarations>
+			<Literal>
+				<ID>Tablename</ID>
+				<ToolTip>Name of the table</ToolTip>
+				<Default>Sample_Table</Default>
+			</Literal>
+		</Declarations>
+		<Code Language="SQL">
+			<![CDATA[IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[$Tablename$]') AND type in (N'U'))
+BEGIN
+	CREATE TABLE $Tablename$
+	(
+		$Tablename$ID INT NOT NULL IDENTITY(1,1),
+		$end$
+		CONSTRAINT PK_$Tablename$ PRIMARY KEY CLUSTERED ( $Tablename$ID )
+	) ON [PRIMARY]
+END
+GO]]>
+		</Code>
+	</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
+

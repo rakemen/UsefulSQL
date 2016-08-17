@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+	<Header>
+	<Title>Create Audit Table</Title>
+        <Shortcut></Shortcut>
+	<Description>Creates a template for Audit Tables.</Description>
+	<Author>Bhuvan Goradia</Author>
+	<SnippetTypes>
+		<SnippetType>Expansion</SnippetType>
+	</SnippetTypes>
+	</Header>
+	<Snippet>
+		<Declarations>
+			<Literal>
+				<ID>TableName</ID>
+				<ToolTip>Name of the table</ToolTip>
+				<Default>Sample_Table</Default>
+			</Literal>
+			<Literal>
+				<ID>SchemaName</ID>
+				<ToolTip>Name of the Database of the original table</ToolTip>
+				<Default>ATWeb</Default>
+			</Literal>
+		</Declarations>
+		<Code Language="SQL">
+			<![CDATA[SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+IF OBJECT_ID('$SchemaName$.$TableName$') IS NULL
+BEGIN
+	CREATE TABLE $SchemaName$.$TableName$
+	(
+		[AuditID] [BIGINT] IDENTITY(1,1) NOT NULL,
+		[AuditTranID] [UNIQUEIDENTIFIER] NOT NULL CONSTRAINT [DF_$SchemaName$_$TableName$_AuditTranID]  DEFAULT (NEWID()),
+		[DML] [CHAR](1) NOT NULL,
+		[AuditTimeStamp] [DATETIME] NOT NULL CONSTRAINT [DF_$SchemaName$_$TableName$_AuditTimeStamp]  DEFAULT (GETDATE()),
+		[AuditLogin] [VARCHAR](255) NOT NULL,
+		-- Copy Table Columns here
+		CONSTRAINT [PK_$SchemaName$_$TableName$] PRIMARY KEY CLUSTERED ( [AuditTimeStamp] ASC, [AuditID] ASC )
+		WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 100) ON [PRIMARY]
+	) ON [PRIMARY]
+END
+GO
+SET ANSI_PADDING OFF
+GO
+IF NOT EXISTS(SELECT * FROM sys.objects WHERE name = 'CK_$SchemaName$_$TableName$_DML')
+	ALTER TABLE $SchemaName$.$TableName$ WITH NOCHECK ADD CONSTRAINT [CK_$SchemaName$_$TableName$_DML] CHECK (([DML]='D' OR [DML]='U' OR [DML]='I'))
+GO
+ALTER TABLE $SchemaName$.$TableName$ CHECK CONSTRAINT [CK_$SchemaName$_$TableName$_DML]
+GO$end$
+]]>
+		</Code>
+	</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
+
